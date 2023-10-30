@@ -4,13 +4,22 @@ import 'package:interactive_svg/utils/core/commons/widgets.dart';
 import 'package:interactive_svg/utils/features/map/bloc.dart';
 import 'package:interactive_svg/utils/features/map/widgets.dart';
 
-class MapPage extends StatelessWidget {
+class MapPage extends StatefulWidget {
   const MapPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final bloc = context.read<MapPageBloc>()..init();
+  State<MapPage> createState() => _MapPageState();
+}
 
+class _MapPageState extends State<MapPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.mapPageBloc.init();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Map Page')),
       body: BlocBuilder<MapPageBloc, MapPageState>(
