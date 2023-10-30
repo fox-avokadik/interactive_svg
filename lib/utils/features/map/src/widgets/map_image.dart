@@ -6,13 +6,11 @@ import '../../widgets.dart';
 class MapImage extends StatelessWidget {
   final List<Region> regiones;
   final Region? currentRegion;
-  final Function(Region region)? onRegionSelected;
 
   const MapImage({
     super.key,
     required this.regiones,
     this.currentRegion,
-    this.onRegionSelected,
   });
 
   @override
@@ -52,7 +50,6 @@ class MapImage extends StatelessWidget {
         clipper: Clipper(svgPath: region.path),
         color: Color(int.parse(region.color, radix: 16)).withOpacity(opacity),
         region: region,
-        onRegionSelected: onRegionSelected,
       );
 
       regionesFromSvg.add(regionFromSvg);
@@ -65,12 +62,11 @@ class MapImage extends StatelessWidget {
     required Clipper clipper,
     required Color color,
     required Region region,
-    final Function(Region region)? onRegionSelected,
   }) {
     return ClipPath(
       clipper: clipper,
       child: GestureDetector(
-        onTap: () => onRegionSelected?.call(region),
+        onTap: () => context.mapPageBloc.onRegionSelected(region),
         child: Container(color: color),
       ),
     );
