@@ -36,7 +36,6 @@ class _MapPageState extends State<MapPage> {
             return MapImage(
               regiones: state.regiones,
               currentRegion: state.currentRegion,
-              onRegionSelected: (country) => bloc.onRegionSelected(country),
             );
           }
 
