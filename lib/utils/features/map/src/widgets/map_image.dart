@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interactive_svg/utils/data/svg_reader/domain.dart';
+import 'package:interactive_svg/utils/features/map/src/bloc/map_page_bloc.dart';
 
 import '../../widgets.dart';
 
@@ -21,14 +22,12 @@ class MapImage extends StatelessWidget {
           child: InteractiveViewer(
             maxScale: 5,
             minScale: 0.1,
-            child: Stack(
-              children: _buildClippedImage(),
-            ),
+            child: Stack(children: _buildClippedImage(context)),
           ),
         ),
         SafeArea(
           child: Text(
-            currentRegion?.zone ?? "",
+            currentRegion?.zone ?? '',
             style: Theme.of(context).textTheme.headlineLarge,
           ),
         ),
@@ -36,7 +35,7 @@ class MapImage extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildClippedImage() {
+  List<Widget> _buildClippedImage(BuildContext context) {
     final List<Widget> regionesFromSvg = [];
 
     for (var region in regiones) {
@@ -46,29 +45,19 @@ class MapImage extends StatelessWidget {
         opacity = currentRegion?.id == region.id ? opacity : 0.3;
       }
 
-      final regionFromSvg = _getClippedImage(
+      final color =	Color(int.parse(region.color, radix: 16)).withOpacity(opacity);
+
+      final regionFromSvg = ClipPath(
         clipper: Clipper(svgPath: region.path),
-        color: Color(int.parse(region.color, radix: 16)).withOpacity(opacity),
-        region: region,
+        child: GestureDetector(
+          onTap: () => context.mapPageBloc.onRegionSelected(region),
+          child: Container(color: color),
+        ),
       );
 
       regionesFromSvg.add(regionFromSvg);
     }
 
     return regionesFromSvg;
-  }
-
-  Widget _getClippedImage({
-    required Clipper clipper,
-    required Color color,
-    required Region region,
-  }) {
-    return ClipPath(
-      clipper: clipper,
-      child: GestureDetector(
-        onTap: () => context.mapPageBloc.onRegionSelected(region),
-        child: Container(color: color),
-      ),
-    );
   }
 }
